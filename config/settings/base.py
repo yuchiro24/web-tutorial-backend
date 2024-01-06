@@ -142,6 +142,8 @@ LOGGING = {
         }
     }
 }
-
+# CORSの設定
+# [Q] frontendでAPIリクエストをhost.docker.internal:8000にルーティングしているが、ローカル環境のブラウザからアクセスすると名前解決ができない。
+# そのためローカル環境でhost.docker.internalをlocalhostにホスティングしており、CORSの設定が必要になっている。
 CORS_ALLOWED_ORIGINS = ("http://localhost:3000").split(" ")
 CORS_ALLOW_CREDENTIALS = True
