@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "api.hello_db",
     "corsheaders",
+    "rest_framework",
+    "api.books",
 ]
 
 MIDDLEWARE = [
