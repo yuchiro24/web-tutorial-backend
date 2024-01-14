@@ -1,8 +1,12 @@
 asgiref==3.7.2
 Django==5.0.1
+django-cors-headers==4.3.1
 djangorestframework==3.14.0
+djangorestframework-simplejwt==5.3.1
 mysqlclient==2.2.1
+PyJWT==2.8.0
 pytz==2023.3.post1
 setuptools==69.0.2
 sqlparse==0.4.4
+timedelta==2020.12.3
 wheel==0.42.0
