@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework.exceptions import NotFound
 from django.conf import settings
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 
 # Create your views here.
 class BookView(APIView):
@@ -53,6 +53,7 @@ class BookView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
         
 class BookDetailView(APIView):
+    authentication_classes = [CustomJWTAuthentication]
     # 書籍詳細を取得
     def get(self, request, pk, format=None):
         book = Book.objects.get(pk=pk)
@@ -85,4 +86,32 @@ class LoginView(APIView):
             return response
         else:
             return Response(serializer.errors, status.HTTP_401_UNAUTHORIZED)
+
+class RefreshView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = []
+
+    def post(self, request):
+        request.data["refresh"] = request.META.get("HTTP_REFRESH_TOKEN")
+        serializer = TokenRefreshSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        access = serializer.validated_data.get("access", None)
+        refresh = serializer.validated_data.get("refresh", None)
+        if access:
+            response = Response(status=status.HTTP_200_OK)
+            max_age = settings.COOKIE_TIME
+            response.set_cookie("access_token", access, max_age=max_age, httponly=True)
+            response.set_cookie("refresh_token", refresh, max_age=max_age, httponly=True)
+            return response
+        else:
+            return Response(serializer.errors, status.HTTP_401_UNAUTHORIZED)
         
+class LogoutView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request, *args):
+        response = Response(status=status.HTTP_200_OK)
+        response.delete_cookie("access_token")
+        response.delete_cookie("refresh_token")
+        return response
