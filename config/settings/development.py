@@ -4,7 +4,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         # MySQLの設定
-        'NAME': 'app',
+        'NAME': 'app-db',
         'USER': 'root',
         'PASSWORD': 'root',
         'PORT': '53306',

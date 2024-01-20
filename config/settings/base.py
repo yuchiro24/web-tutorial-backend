@@ -144,24 +144,36 @@ LOGGING = {
         }
     }
 }
-# CORSの設定
-# [Q] frontendでAPIリクエストをhost.docker.internal:8000にルーティングしているが、ローカル環境のブラウザからアクセスすると名前解決ができない。
-# そのためローカル環境でhost.docker.internalをlocalhostにホスティングしており、CORSの設定が必要になっている。
-CORS_ALLOWED_ORIGINS = ("http://localhost:3000").split(" ")
+# Frontendとの疎通のためのCORSの設定
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000"
+]
 CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOWED_HEADERS = [
+#     "accept",
+#     "authorization",
+#     "content-type",
+#     "x-csrftoken",
+#     "Access-Control-Allow-Origin",
+#     "Access-Control-Allow-Credentials",
+#     "User-Agent",
+#     "access_token",
+#     "refresh_token"
+# ]
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "api.books.authentication.CustomJWTAuthentication",
+        # "rest_framework_simplejwt.authentication.JWTAuthentication",
         # "rest_framework.authentication.SessionAuthentication",
     ),
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(minutes=15),
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=30),
     "UPDATE_LAST_LOGIN": True,
 }
 
-COOKIE_TIME = 60 * 60 * 12
+COOKIE_TIME = 60 * 60 * 24 * 1

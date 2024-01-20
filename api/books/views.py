@@ -12,8 +12,6 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, Toke
 
 # Create your views here.
 class BookView(APIView):
-    authentication_classes = [CustomJWTAuthentication]
-    
     # 書籍の一覧もしくは一意の書籍を取得
     def get(self, request, id=None, format=None):
         if id is None:
@@ -53,7 +51,7 @@ class BookView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
         
 class BookDetailView(APIView):
-    authentication_classes = [CustomJWTAuthentication]
+    
     # 書籍詳細を取得
     def get(self, request, pk, format=None):
         book = Book.objects.get(pk=pk)
@@ -73,7 +71,7 @@ class LoginView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = []
 
-    def post(self, request, format=None):
+    def post(self, request):
         serializer = TokenObtainPairSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         access = serializer.validated_data.get("access", None)
@@ -81,8 +79,11 @@ class LoginView(APIView):
         if access:
             response = Response(status=status.HTTP_200_OK)
             max_age = settings.COOKIE_TIME
-            response.set_cookie("access_token", access, max_age=max_age, httponly=True)
-            response.set_cookie("refresh_token", refresh, max_age=max_age, httponly=True)
+            response.set_cookie('test', "test")
+            response.set_cookie('access_token', access, max_age=max_age, httponly=True)
+            response.set_cookie('refresh_token', refresh, max_age=max_age, httponly=True)
+            print("access_token", access)
+            print("response", response.cookies)
             return response
         else:
             return Response(serializer.errors, status.HTTP_401_UNAUTHORIZED)
